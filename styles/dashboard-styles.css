@@ -1,0 +1,83 @@
+.row {
+  display: flex;
+}
+
+.right-dashboard {
+  flex: 60%;
+}
+.left-dashboard {
+  flex: 30%;
+}
+
+#amount-error,
+#category-error,
+#account-error {
+  visibility: hidden;
+}
+.add-income,
+.add-expense {
+  margin: 0 10px;
+}
+
+.circular-progress-bar {
+  width: 75px;
+}
+
+//#logout-button {
+//  display: none;
+//}
+
+#user-name {
+  visibility: hidden;
+}
+.accounts-table-container {
+  margin-top: 70px;
+  overflow-y: scroll;
+  height: 224px;
+}
+
+.progress-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 50px auto;
+  max-width: 300px;
+}
+
+.progress-bar {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  //border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  
+}
+
+.progress-fill {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    #025928 0% var(--income-percent, 0%),
+    #c10101 var(--income-percent, 0%) 100%
+  );
+}
+
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+}
+.income-green {
+  height: 15px;
+  width: 10px;
+  background-color: #025928;
+}
+.expense-red {
+  height: 15px;
+  width: 10px;
+  background-color: #c10101;
+}

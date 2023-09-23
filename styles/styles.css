@@ -1,0 +1,48 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+}
+.row {
+  display: flex;
+}
+
+.left-column {
+  flex: 25%;
+}
+.right-column {
+  flex: 75%;
+}
+
+.signin-form {
+  border-top-left-radius: 35px;
+  border-bottom-left-radius: 35px;
+}
+
+.signup-intro {
+  top: 33%;
+  left: 33%;
+  transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 992px){
+  .right-column{
+    flex:45%;
+  }
+  .left-column{
+    flex:45%;
+  }
+  
+}
+@media screen and (max-width: 762px){
+  .right-column{
+    flex:75%;
+  }
+  .left-column{
+    flex:25%;
+  }
+  
+}

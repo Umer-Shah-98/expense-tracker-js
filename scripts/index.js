@@ -24,20 +24,47 @@ const incomePercentageSpan = document.getElementById("income-percentage-span");
 const expensePercentageSpan = document.getElementById(
   "expense-percentage-span"
 );
+const incomeLoaderEl = document.getElementById("income-transaction-loader");
+const expenseLoaderEl = document.getElementById("expense-transaction-loader");
+const cashAmountLoaderEl = document.getElementById("cash-amount-loader");
+const savingsAmountLoaderEl = document.getElementById("savings-amount-loader");
+const banksAmountLoaderEl = document.getElementById("banks-amount-loader");
 
 // userId for auth and access
 let key = localStorage.getItem("userId");
 
-//set up UI elements
 const setUpUI = async (user) => {
   if (user) {
     const userSnapshot = await db.collection("users").doc(user.uid).get();
 
     const userData = userSnapshot.data();
-    const userName = userData.uname;
-    const html = `Welcome ${userName}`;
-    userNameEl.innerHTML = html;
-    userNameEl.style.visibility = "visible";
+    const userName = `Welcome ${userData.uname}`;
+
+    // Get the typewriter container and text elements
+    const typewriterContainer = document.getElementById("typewriter-container");
+    const typewriterText = document.getElementById("typewriter-text");
+
+    // Set the initial text content of the typewriter text element
+    typewriterText.textContent = "";
+
+    // Split the userName into characters
+    const characters = userName.split("");
+    let index = 0;
+
+    // Function to add characters with typewriter effect
+    function typeCharacter() {
+      if (index < characters.length) {
+        typewriterText.textContent += characters[index];
+        index++;
+        setTimeout(typeCharacter, 100); // Adjust the typing speed here (in milliseconds)
+      }
+    }
+
+    // Start the typewriter effect
+    typeCharacter();
+
+    // Make the typewriter container visible
+    typewriterContainer.style.visibility = "visible";
   }
 };
 
@@ -45,6 +72,7 @@ const setUpUI = async (user) => {
 const cashAmount = (accounts) => {
   let cashAccount = accounts.filter((account) => account.id === "CASH");
   let sum = cashAccount[0].amount;
+  cashAmountLoaderEl.style.display = "none";
   cashAmountEl.innerText = `RS. ${sum}/-`;
 };
 
@@ -52,6 +80,7 @@ const cashAmount = (accounts) => {
 const savingsAmount = (accounts) => {
   let cashAccount = accounts.filter((account) => account.id === "SAVINGS");
   let sum = cashAccount[0].amount;
+  savingsAmountLoaderEl.style.display = "none";
   savingsAmountEl.innerText = `RS. ${sum}/-`;
 };
 
@@ -67,8 +96,10 @@ const allBanksAmount = (accounts) => {
       sum += account.amount;
     });
     console.log(sum);
+    banksAmountLoaderEl.style.display = "none";
     banksAmountEl.innerText = `RS. ${sum}/-`;
   } else {
+    banksAmountLoaderEl.style.display = "none";
     banksAmountEl.innerText = `RS. ${0}/-`;
   }
 };
@@ -83,24 +114,37 @@ const totalAmount = (accounts) => {
   console.log(sum);
 };
 
-//rendering categories in select options
-const selectCategory = () => {
+const selectCategory = (userId) => {
   db.collection("categories")
+    .doc(key) // Assuming you have a document with the same ID as the user's UID
     .get()
-    .then((snapshot) => {
-      snapshot.docs.forEach((doc) => {
-        let docData = doc.data();
-        let { categories } = docData;
+    .then((doc) => {
+      if (doc.exists) {
+        const userData = doc.data();
+        const categories = userData.categories;
+        const selectCategoryEl = document.getElementById("category-options");
+
+        // Clear existing options
+        selectCategoryEl.innerHTML = "";
+
+        // Create an option element for each category
         categories.forEach((category) => {
-          const newOption = document.createElement("option");
-          const optionText = document.createTextNode(category);
-          newOption.appendChild(optionText);
-          newOption.value = category;
-          selectCategoryEl.appendChild(newOption);
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          selectCategoryEl.appendChild(option);
         });
-      });
+      } else {
+        console.log("User document not found in Firestore.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user categories:", error);
     });
 };
+
+// Call the function with the user's UID
+// selectCategory(key); // Replace key with the user's UID
 
 //rendering accounts in table
 const accountsInTable = (bankOptions) => {
@@ -252,6 +296,7 @@ renderingTransactionHistory(key);
 const handleAddIncome = async (e) => {
   e.stopPropagation();
   e.preventDefault();
+  incomeLoaderEl.style.display = "block";
 
   const amount = Number(addTransactionForm.amount.value);
   const category = selectCategoryEl.value;
@@ -267,16 +312,19 @@ const handleAddIncome = async (e) => {
 
   if (amount <= 0) {
     amountErrorEl.style.visibility = "visible";
+    incomeLoaderEl.style.display = "none";
     return;
   }
 
   if (!accountValue) {
     accountErrorEl.style.visibility = "visible";
+    incomeLoaderEl.style.display = "none";
     return;
   }
 
   if (!category) {
     categoryErrorEl.style.visibility = "visible";
+    incomeLoaderEl.style.display = "none";
     return;
   }
 
@@ -303,6 +351,8 @@ const handleAddIncome = async (e) => {
   await db.collection("accounts").doc(key).collection("accounts").doc(key).set({
     accounts: updatedAccounts,
   });
+  //income-button Loader
+  incomeLoaderEl.style.display = "none";
 
   const transaction = {
     category: category,
@@ -342,7 +392,7 @@ addIncomeButtonEl.addEventListener("click", handleAddIncome);
 const handleAddExpense = async (e) => {
   e.stopPropagation();
   e.preventDefault();
-
+  expenseLoaderEl.style.display = "block";
   const amount = Number(addTransactionForm.amount.value);
   const category = selectCategoryEl.value;
   const accountValue = selectAccountOptionEl.value;
@@ -357,16 +407,19 @@ const handleAddExpense = async (e) => {
 
   if (amount <= 0) {
     amountErrorEl.style.visibility = "visible";
+    expenseLoaderEl.style.display = "none";
     return;
   }
 
   if (!accountValue) {
     accountErrorEl.style.visibility = "visible";
+    expenseLoaderEl.style.display = "none";
     return;
   }
 
   if (!category) {
     categoryErrorEl.style.visibility = "visible";
+    expenseLoaderEl.style.display = "none";
     return;
   }
 
@@ -396,13 +449,18 @@ const handleAddExpense = async (e) => {
   });
 
   if (insufficientBalance) {
-    alert("You have insufficient balance to make this transaction!");
+    expenseLoaderEl.style.display = "none";
+    setTimeout(() => {
+      alert("You have insufficient balance to make this transaction!");
+    }, 100);
     return;
   }
 
   await db.collection("accounts").doc(key).collection("accounts").doc(key).set({
     accounts: updatedAccounts,
   });
+  //disappear loader
+  expenseLoaderEl.style.display = "none";
 
   const transaction = {
     category: category,
@@ -489,7 +547,7 @@ const updateAccountTable = () => {
   });
   // gettingTotalIncomesAndExpenses();
 };
-
+selectCategory();
 updateAccountTable();
 //listens for every auth state change
 accountsAccess(key);
@@ -506,4 +564,3 @@ auth.onAuthStateChanged((user) => {
     console.log(userName);
   }
 });
-//logout button visibility function

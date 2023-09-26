@@ -10,12 +10,82 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/dashboard-styles.css" />
     <title>Expense Tracker | | Dashboard</title>
+    <style>
+      /* CSS for the loader */
+      .loader {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid #333333;
+        border-bottom: 4px solid #333;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        margin-right: 10px;
+        /* position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-top: 10px;
+        margin-left: 10px; */
+        display: none;
+      }
+      #expense-transaction-loader{
+        border-top: 4px solid #d10505;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+
+      }
+      #income-transaction-loader{
+        border-top: 4px solid #10a725;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+
+      }
+      .transaction-history-loader{
+        display: block;
+        width: 80px;
+        height: 80px;
+        margin: auto;
+        margin-top: 100px
+      }
+      .amount-loader{
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid #333333;
+        border-bottom: 4px solid #333;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        margin-right: 10px;
+        display: block;
+      }
+      #total-amount-loader{
+        margin-left: 20px;
+      }
+      #cash-amount-loader{
+        margin-left: 10px;
+        margin-top: 5px;
+      }
+      #savings-amount-loader{
+        margin-left: 10px;
+        margin-top: 5px;
+      }
+      #banks-amount-loader{
+        margin-left: 10px;
+        margin-top: 5px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
-      <div class="container mx-auto sign-in-page row bg-white gap-0 m-5">
+      <div class="container grid md:grid-cols-3 md:gap-5 mx-auto sign-in-page row bg-white gap-0 m-5">
         <!--Right Dashboard-->
-        <div class="right-dashboard m-5">
-          <div>
+        <div class="md:col-span-2">
+            <div class="right-dashboard m-5">
             <div class="add-transaction flex flex-col justify-start">
               <h1 class="p-2 font-bold">Add Transaction</h1>
               <form id="add-transaction-form">
@@ -45,11 +115,13 @@
                <p id="category-error" class="ml-3"><span class="italic text-sm text-red-700 font-bold">*Select any Category</span></p>
                   </div>
                   <div class="buttons flex items-start mb-5">
-                  <div class="add-income bg-green-500 rounded-md p-2 font-bold shadow-md shadow-green-300 hover:shadow-green-400">
-                    <button id="add-income-button"  type="button">Add Income</button>
+                  <div class="add-income bg-green-500 rounded-md p-2 text-xs font-bold shadow-md shadow-green-300 hover:shadow-green-400">
+                    <button id="add-income-button" class="flex items-center"  type="button"><div id="income-transaction-loader" class="loader relative shadow-sm">
+                    </div>Add Income</button>
                   </div>
-                  <div class="add-expense bg-red-500 rounded-md p-2 font-bold shadow-md shadow-red-300 hover:shadow-red-400">
-                    <button id="add-expense-button" type="button">Add Expense</button>
+                  <div class="add-expense bg-red-500 rounded-md p-2 text-xs font-bold shadow-md shadow-red-300 hover:shadow-red-400">
+                    <button id="add-expense-button" class="flex" type="button"><div id="expense-transaction-loader" class="loader relative shadow-sm">
+                    </div>Add Expense</button>
                   </div>
                 </div>
                 </div>
@@ -77,7 +149,23 @@
           </tr>
       </thead>
       <tbody id="transaction-history-table-body" >
-      </tbody>
+        
+<tr class="py-10">
+  <td>
+
+  </td>
+  <td colspan="2" class="border-collapse">
+    <div class="transaction-history-loader loader shadow-sm"></div>
+
+  </td>
+  <td>
+
+  </td>
+  <td>
+
+  </td>
+</tr>              
+   </tbody>
   </table>
 </div>
 <div>
@@ -122,10 +210,14 @@
         <!--Right Dashboard Ends-->
 
         <!--Left Dashboard Starts-->
-        <div class="left-dashboard bg-gray-200">
+        <div class="left-dashboard bg-gray-200 md:col-span-1">
           <div class="user-info">
+            <!--Typewriter Effect-->
             <div class="image flex justify-start md:justify-start xl:justify-between lg:justify-between lg:items-center md:items-center">
-              <h1 class="font-bold m-2 text-black" id="user-name">Welcome User</h1>
+              <!-- <h1 class="font-bold m-2 text-black" id="user-name">Welcome User</h1> -->
+              <div class="ml-2" id="typewriter-container">
+                <span class="font-bold m-2 text-black" id="typewriter-text"></span>
+              </div>
               <img
               id="user-profile"
                 class="m-2 cursor-pointer hidden sm:hidden md:hidden lg:inline xl:inline"
@@ -139,19 +231,23 @@
               <div class="heading my-2">
                 <h1 class="font-bold">What You Have</h1>
               </div>
-              <div  class="total-amount my-3"><h1 id="total-amount" class="font-bold text-blue-700 text-lg" ></h1></div>
+              <div  class="total-amount my-3"><h1 id="total-amount" class="font-bold text-blue-700 text-lg" ><div id="total-amount-loader" class="amount-loader relative shadow-sm">
+              </div></h1></div>
               <div class="amount-accounts  flex justify-start md:justify-start lg:justify-aro xl:justify-around flex-col lg:flex-row xl:flex-row md:flex-col sm:flex-col items-cenetr my-2">
                 <div class="cash-amount-div">
                   <h1 class="font-bold">Cash</h1>
-                  <p id="cash-amount" class="text-blue-700 font-semibold"></p>
+                  <p id="cash-amount" class="text-blue-700 font-semibold"><div id="cash-amount-loader" class="amount-loader relative shadow-sm">
+                  </div></p>
                 </div>
                 <div class="bank-amount-div">
                   <h1 class="font-bold">Banks</h1>
-                  <p id="banks-amount" class="text-blue-700 font-semibold"></p>
+                  <p id="banks-amount" class="text-blue-700 font-semibold"><div id="banks-amount-loader" class="amount-loader relative shadow-sm">
+                  </div></p>
                 </div>
                 <div class="saving-amount-div">
                   <h1 class="font-bold">Savings</h1>
-                  <p id="savings-amount" class="text-blue-700 font-semibold"></p>
+                  <p id="savings-amount" class="text-blue-700 font-semibold"><div id="savings-amount-loader" class="amount-loader relative shadow-sm">
+                  </div></p>
                 </div>
               </div>
 

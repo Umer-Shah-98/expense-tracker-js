@@ -1,4 +1,4 @@
-.row {
+/* .row {
   display: flex;
 }
 
@@ -7,7 +7,7 @@
 }
 .left-dashboard {
   flex: 30%;
-}
+} */
 
 #amount-error,
 #category-error,

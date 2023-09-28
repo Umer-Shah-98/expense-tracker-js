@@ -1,7 +1,17 @@
 //login
 const loginForm = document.getElementById("login-form");
 const loaderEl = document.getElementById("loader");
+const showHidePasswordEl = document.getElementById("show-hide-password");
+const passwordEl = document.getElementById("password");
 console.log(loginForm);
+
+//toggle password visibility function
+showHidePasswordEl.addEventListener("click", () => {
+  const type =
+    passwordEl.getAttribute("type") === "password" ? "text" : "password";
+  passwordEl.setAttribute("type", type);
+  showHidePasswordEl.innerText = type === "password" ? "Show" : "Hide";
+});
 //login the user
 const handleLogin = (e) => {
   e.preventDefault();
